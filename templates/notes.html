@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Semua catatan · Voice to Notes{% endblock %}
+{% block breadcrumb %}Semua catatan{% endblock %}
+{% block content %}
+<div class="page-heading notes-heading"><div><p class="eyebrow">ARSIP MATERI BELAJAR</p><h1>Semua catatan</h1><p class="page-lead">Temukan dan buka kembali catatan yang pernah kamu simpan.</p></div><a class="button button-primary" href="{{ url_for('record') }}">＋ Catatan baru</a></div>
+<form class="search-form" method="get" action="{{ url_for('notes') }}"><span>⌕</span><input name="q" value="{{ query }}" placeholder="Cari judul, isi, atau kategori..." aria-label="Cari catatan"><button type="submit">Cari</button>{% if query %}<a href="{{ url_for('notes') }}">Hapus</a>{% endif %}</form>
+<div class="list-caption"><span>{{ notes|length }} catatan{% if query %} ditemukan{% endif %}</span><span>Diurutkan dari yang terbaru</span></div>
+{% if notes %}
+<div class="note-list full-note-list">
+  {% for note in notes %}
+    <a class="note-row" href="{{ url_for('detail_note', note_id=note.id) }}"><div class="note-mini-icon">{{ '◉' if note.audio_file else '▤' }}</div><div class="note-row-main"><strong>{{ note.title }}</strong><span>{{ note.category or 'Tanpa kategori' }} · {{ note.created_at[:10] }}</span></div><p>{{ note.content|truncate(115) }}</p><span class="row-arrow">↗</span></a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><span class="empty-icon">⌕</span><strong>{% if query %}Catatan tidak ditemukan{% else %}Belum ada catatan{% endif %}</strong><p>{% if query %}Coba kata kunci lain atau hapus pencarian.{% else %}Mulai dengan merekam suara atau mengunggah file audio.{% endif %}</p>{% if not query %}<a class="button button-primary" href="{{ url_for('record') }}">Buat catatan pertama</a>{% endif %}</div>
+{% endif %}
+{% endblock %}

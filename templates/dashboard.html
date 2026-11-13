@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Beranda · Voice to Notes{% endblock %}
+{% block content %}
+<div class="welcome-row">
+  <div><p class="eyebrow">RUANG BELAJAR PRIBADI</p><h1>Halo, selamat belajar <span class="wave">✦</span></h1><p class="page-lead">Simpan setiap ide dan materi pentingmu dalam satu tempat.</p></div>
+  <div class="today-chip"><span class="today-dot"></span> Catatanmu tersimpan lokal</div>
+</div>
+<div class="stats-grid">
+  <article class="stat-card"><div class="stat-icon purple">▤</div><div><span class="stat-label">Total catatan</span><strong>{{ total_notes }}</strong><span class="stat-foot">materi tersimpan</span></div><span class="stat-decoration">▤</span></article>
+  <article class="stat-card"><div class="stat-icon peach">◉</div><div><span class="stat-label">Rekaman audio</span><strong>{{ total_recordings }}</strong><span class="stat-foot">audio tersimpan</span></div><span class="stat-decoration">◉</span></article>
+</div>
+<div class="section-heading"><div><p class="eyebrow">MULAI DARI SINI</p><h2>Buat catatan baru</h2></div></div>
+<div class="action-grid">
+  <a class="action-card record-card" href="{{ url_for('record') }}"><div class="action-icon record-icon">◉</div><div><h3>Rekam suara</h3><p>Rekam penjelasan langsung dari mikrofon dan ubah menjadi teks.</p><span class="text-link">Mulai merekam <b>↗</b></span></div><span class="action-arrow">↗</span></a>
+  <a class="action-card upload-card" href="{{ url_for('upload') }}"><div class="action-icon upload-icon">↑</div><div><h3>Unggah audio</h3><p>Pilih file rekaman dari perangkatmu untuk ditranskripsikan.</p><span class="text-link">Pilih file audio <b>↗</b></span></div><span class="action-arrow">↗</span></a>
+</div>
+<div class="section-heading recent-heading"><div><p class="eyebrow">DOKUMENTASI TERAKHIR</p><h2>Catatan terbaru</h2></div><a class="subtle-link" href="{{ url_for('notes') }}">Lihat semua <span>→</span></a></div>
+{% if recent_notes %}
+  <div class="note-list">
+    {% for note in recent_notes %}
+      <a class="note-row" href="{{ url_for('detail_note', note_id=note.id) }}"><div class="note-mini-icon">{{ '◉' if note.audio_file else '▤' }}</div><div class="note-row-main"><strong>{{ note.title }}</strong><span>{{ note.category or 'Tanpa kategori' }} · {{ note.created_at[:10] }}</span></div><p>{{ note.content|truncate(90) }}</p><span class="row-arrow">↗</span></a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state compact-empty"><span class="empty-icon">▤</span><strong>Belum ada catatan</strong><p>Rekam suara atau unggah audio untuk membuat catatan pertamamu.</p><a class="button button-primary" href="{{ url_for('record') }}">Buat catatan pertama</a></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ note.title }} · Voice to Notes{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('notes') }}">Semua catatan</a> <span>/</span> {{ note.title }}{% endblock %}
+{% block content %}
+<div class="detail-top"><a class="back-link" href="{{ url_for('notes') }}">← Kembali ke catatan</a><div class="detail-actions"><a class="button button-secondary" href="{{ url_for('download_note', note_id=note.id, format_name='txt') }}">↓ Unduh TXT</a><a class="button button-secondary" href="{{ url_for('download_note', note_id=note.id, format_name='pdf') }}">↓ Unduh PDF</a><a class="button button-primary" href="{{ url_for('edit_note', note_id=note.id) }}">Edit catatan</a></div></div>
+<article class="panel detail-panel">
+  <p class="eyebrow">CATATAN BELAJAR{% if note.category %} · {{ note.category }}{% endif %}</p>
+  <h1>{{ note.title }}</h1>
+  <p class="detail-date">Dibuat {{ note.created_at[:10] }}{% if note.updated_at != note.created_at %} · Diperbarui {{ note.updated_at[:10] }}{% endif %}</p>
+  {% if note.audio_file %}<div class="audio-attachment"><span>◉</span><div><strong>Rekaman audio</strong><small>Audio asli catatan ini</small></div><audio controls preload="none" src="{{ url_for('uploaded_audio', filename=note.audio_file) }}">Browser tidak mendukung pemutar audio.</audio></div>{% endif %}
+  <div class="note-content">{{ note.content }}</div>
+</article>
+<form class="delete-form" method="post" action="{{ url_for('delete_note', note_id=note.id) }}" data-confirm="Hapus catatan ini? Tindakan ini tidak dapat dibatalkan."><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="text-danger" type="submit">Hapus catatan</button></form>
+{% endblock %}

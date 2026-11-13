@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>{% block title %}Voice to Notes{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('dashboard') }}">
+        <span class="brand-mark">V</span>
+        <span>voice<span class="brand-light">notes</span><small>CATATAN LEBIH MUDAH</small></span>
+      </a>
+      <p class="nav-label">MENU</p>
+      <nav class="navigation" aria-label="Navigasi utama">
+        <a class="{% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}"><span>⌂</span> Beranda</a>
+        <a class="{% if request.endpoint == 'record' %}active{% endif %}" href="{{ url_for('record') }}"><span>◉</span> Rekam suara</a>
+        <a class="{% if request.endpoint == 'upload' %}active{% endif %}" href="{{ url_for('upload') }}"><span>↑</span> Unggah audio</a>
+        <a class="{% if request.endpoint in ['notes', 'detail_note', 'edit_note'] %}active{% endif %}" href="{{ url_for('notes') }}"><span>▤</span> Semua catatan</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="tip-card"><span class="tip-icon">✦</span><strong>Belajar lebih fokus</strong><p>Rekam penjelasan, simpan sebagai catatan, dan pelajari kembali kapan saja.</p></div>
+        <span class="sidebar-caption">VOICE TO NOTES · VERSI 1.0</span>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">Ruang belajar <span>/</span> <strong>{% block breadcrumb %}Beranda{% endblock %}</strong></div>
+        <a class="topbar-action" href="{{ url_for('record') }}"><span>＋</span> Catatan baru</a>
+      </header>
+      <section class="page-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-list">
+              {% for category, message in messages %}
+                <div class="flash flash-{{ category }}" role="status">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</body>
+</html>

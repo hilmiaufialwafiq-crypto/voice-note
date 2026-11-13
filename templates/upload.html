@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Unggah audio · Voice to Notes{% endblock %}
+{% block breadcrumb %}Unggah audio{% endblock %}
+{% block content %}
+<div class="page-heading"><p class="eyebrow">DARI REKAMAN YANG SUDAH ADA</p><h1>Unggah audio</h1><p class="page-lead">Pilih rekaman dari perangkatmu, lalu periksa hasil transkripsinya.</p></div>
+<form class="upload-form panel" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="audio_name" value="{{ audio_name or '' }}">
+  <div class="panel-heading"><div><span class="step-label">LANGKAH 1</span><h2>Pilih file audio</h2></div><span class="file-limit">Maks. 100 MB</span></div>
+  <label class="drop-zone" for="audio-file" id="drop-zone"><span class="drop-icon">↑</span><strong id="file-label">{% if audio_name %}Audio sudah dipilih · pilih file lain jika perlu{% else %}Tarik file ke sini atau <span>pilih file</span>{% endif %}</strong><small>WAV, MP3, M4A, WebM, OGG, FLAC, AIFF</small><input type="file" id="audio-file" name="audio" accept=".wav,.mp3,.m4a,.webm,.ogg,.flac,.aiff,.aif,audio/*"></label>
+  {% if audio_name %}<audio class="uploaded-preview" controls preload="none" src="{{ url_for('uploaded_audio', filename=audio_name) }}">Browser tidak mendukung pemutar audio.</audio>{% endif %}
+  <div class="form-footer"><span class="save-hint">Transkripsi memerlukan koneksi internet.</span><button class="button button-primary" type="submit">Transkripsikan audio <span>→</span></button></div>
+</form>
+{% if transcript or audio_name %}
+<form class="panel note-form transcript-result" method="post" action="{{ url_for('create_note_route') }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="audio_name" value="{{ audio_name }}">
+  <div class="panel-heading"><div><span class="step-label">LANGKAH 2</span><h2>Periksa hasil transkripsi</h2></div><span class="edit-badge">Bisa diedit</span></div>
+  <label class="field-label" for="title">Judul catatan</label><input class="text-input" id="title" name="title" maxlength="150" value="{{ title or '' }}" placeholder="Contoh: Materi biologi" required>
+  <label class="field-label" for="category">Kategori <span class="optional">(opsional)</span></label><input class="text-input" id="category" name="category" maxlength="80" value="{{ category or '' }}" placeholder="Contoh: Biologi">
+  <label class="field-label" for="content">Isi catatan</label><textarea class="text-input transcript-input" id="content" name="content" required>{{ content or transcript }}</textarea>
+  <div class="form-footer"><span class="save-hint">Periksa kembali teks sebelum menyimpannya.</span><button class="button button-primary" type="submit">Simpan catatan <span>→</span></button></div>
+</form>
+{% endif %}
+<div class="notice notice-info"><span>ⓘ</span><p>Transkripsi memerlukan internet. Untuk MP3, M4A, WebM, atau OGG, server juga memerlukan FFmpeg untuk mengubah audio.</p></div>
+{% endblock %}

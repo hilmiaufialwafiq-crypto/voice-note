@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Edit catatan · Voice to Notes{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('notes') }}">Semua catatan</a> <span>/</span> Edit catatan{% endblock %}
+{% block content %}
+<div class="page-heading"><p class="eyebrow">PERBARUI MATERI</p><h1>Edit catatan</h1><p class="page-lead">Koreksi transkripsi atau tambahkan informasi yang kamu perlukan.</p></div>
+<form class="panel note-form edit-form" method="post">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <label class="field-label" for="title">Judul catatan</label><input class="text-input" id="title" name="title" maxlength="150" value="{{ note.title }}" required>
+  <label class="field-label" for="category">Kategori <span class="optional">(opsional)</span></label><input class="text-input" id="category" name="category" maxlength="80" value="{{ note.category }}">
+  <label class="field-label" for="content">Isi catatan</label><textarea class="text-input transcript-input" id="content" name="content" required>{{ note.content }}</textarea>
+  <div class="form-footer"><a class="subtle-link" href="{{ url_for('detail_note', note_id=note.id) }}">Batal</a><button class="button button-primary" type="submit">Simpan perubahan <span>→</span></button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Rekam suara · Voice to Notes{% endblock %}
+{% block breadcrumb %}Rekam suara{% endblock %}
+{% block content %}
+<div class="page-heading"><p class="eyebrow">CATAT TANPA TERLEWAT</p><h1>Rekam suara</h1><p class="page-lead">Rekam materi secara langsung. Ucapan ditranskripsikan di browser jika tersedia.</p></div>
+<div class="editor-layout">
+  <div class="panel recording-panel">
+    <div class="panel-heading"><div><span class="step-label">LANGKAH 1</span><h2>Mulai perekaman</h2></div><span class="record-status" id="record-status"><i></i> Siap merekam</span></div>
+    <div class="recorder">
+      <div class="mic-orbit" id="mic-orbit"><span>◉</span></div>
+      <div class="timer" id="timer">00:00</div>
+      <p id="record-hint">Pastikan mikrofon perangkatmu aktif dan diizinkan.</p>
+      <div class="record-controls"><button class="button button-record" id="start-record" type="button">● Mulai merekam</button><button class="button button-stop" id="stop-record" type="button" disabled>■ Berhenti</button></div>
+      <audio id="audio-preview" controls {% if audio_name %}src="{{ url_for('uploaded_audio', filename=audio_name) }}"{% else %}hidden{% endif %}></audio>
+      <p class="browser-note" id="speech-support-note"></p>
+    </div>
+  </div>
+  <form class="panel note-form" method="post" action="{{ url_for('record') }}" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="audio_name" value="{{ audio_name or '' }}">
+    <input type="file" id="recording-file" name="audio" accept="audio/*" hidden>
+    <div class="panel-heading"><div><span class="step-label">LANGKAH 2</span><h2>Periksa catatanmu</h2></div><span class="edit-badge">Bisa diedit</span></div>
+    <label class="field-label" for="title">Judul catatan</label><input class="text-input" id="title" name="title" maxlength="150" value="{{ title or '' }}" placeholder="Contoh: Pengantar bahasa Python" required>
+    <label class="field-label" for="category">Kategori <span class="optional">(opsional)</span></label><input class="text-input" id="category" name="category" maxlength="80" value="{{ category or '' }}" placeholder="Contoh: Pemrograman">
+    <label class="field-label" for="transcript">Hasil transkripsi</label><textarea class="text-input transcript-input" id="transcript" name="content" placeholder="Hasil ucapan akan muncul di sini. Kamu juga bisa menulis atau mengedit catatan secara manual.">{{ transcript or '' }}</textarea>
+    <div class="form-footer"><span class="save-hint">Pastikan isi catatan sudah benar sebelum disimpan.</span><button class="button button-primary" type="submit">Simpan catatan <span>→</span></button></div>
+  </form>
+</div>
+<div class="notice notice-info"><span>ⓘ</span><p>Izin perekaman sebaiknya diminta dari guru atau orang yang berbicara. Transkripsi otomatis dapat keliru, terutama pada audio yang bising.</p></div>
+{% endblock %}
